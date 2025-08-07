@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>¡Adivina el número!</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@700&family=Inter:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="container">
+    <div class="container__contenido">
+      <div class="container__informaciones">
+        <div class="container__texto">
+          <h1>🎯 ¡Adivina el número!</h1>
+          <p class="texto__parrafo">Ingresa un número del 1 al 10 y presiona "Intentar".</p>
+        </div>
+        <input type="number" id="valorUsuario" min="1" max="10" class="container__input" placeholder="Tu número aquí" />
+        <div class="chute container__botones">
+          <button onclick="verificarIntento()" class="container__boton">Intentar</button>
+          <button class="container__boton" id="reiniciar" disabled onclick="reiniciarJuego()">Nuevo juego</button>
+        </div>
+        <p id="mensaje" class="texto__parrafo">🔍 Esperando tu intento...</p>
+      </div>
+      <img src="./img/ia.png" alt="Una persona mirando a la izquierda" class="container__imagen-persona" />
+    </div>
+  </div>
+
+  <script>
+    function generarNumeroSecreto() {
+      return Math.floor(Math.random() * 10) + 1;
+    }
+
+    let numeroSecreto = generarNumeroSecreto();
+    let intentos = 1;
+
+    function asignarTextoElemento(id, texto) {
+      const elementoHTML = document.getElementById(id);
+      if (elementoHTML) {
+        elementoHTML.innerHTML = texto;
+      } else {
+        console.warn(`Elemento con id "${id}" no encontrado.`);
+      }
+    }
+
+    function verificarIntento() {
+      const inputUsuario = document.getElementById("valorUsuario");
+      const numeroDelUsuario = parseInt(inputUsuario.value);
+
+      if (isNaN(numeroDelUsuario) || numeroDelUsuario < 1 || numeroDelUsuario > 10) {
+        asignarTextoElemento("mensaje", "⚠️ Ingresa un número válido entre 1 y 10.");
+        inputUsuario.value = "";
+        return;
+      }
+
+      if (numeroDelUsuario === numeroSecreto) {
+        asignarTextoElemento("mensaje", `🎉 ¡Correcto! Adivinaste en ${intentos} intento(s).`);
+        document.getElementById("reiniciar").disabled = false;
+      } else {
+        const pista = numeroDelUsuario > numeroSecreto
+          ? "🔽 El número secreto es menor."
+          : "🔼 El número secreto es mayor.";
+        asignarTextoElemento("mensaje", pista);
+        intentos++;
+      }
+
+      inputUsuario.value = "";
+    }
+
+    function reiniciarJuego() {
+      numeroSecreto = generarNumeroSecreto();
+      intentos = 1;
+      asignarTextoElemento("mensaje", "🔁 Juego reiniciado. Ingresa un número del 1 al 10.");
+      document.getElementById("reiniciar").disabled = true;
+      console.log("Número secreto (debug):", numeroSecreto);
+    }
+  </script>
+</body>
+</html>
