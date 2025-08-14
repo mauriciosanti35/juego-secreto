@@ -1,54 +1,48 @@
-// Genera un número secreto entre 1 y 10
-function generarNumeroSecreto() {
-  return Math.floor(Math.random() * 10) + 1;
+let amigos = [];
+
+function agregarAmigo() {
+    const input = document.getElementById('amigo');
+    const nombre = input.value.trim();
+
+    if (!nombre) {
+        alert('Por favor, escribe un nombre válido.');
+        return;
+    }
+
+    if (amigos.includes(nombre)) {
+        alert('Este nombre ya está en la lista.');
+        return;
+    }
+
+    amigos.push(nombre);
+    input.value = '';
+    actualizarLista();
 }
 
-// Variables globales
-let numeroSecreto = generarNumeroSecreto();
-let intentos = 1;
-
-// Asigna texto a un elemento HTML por su ID
-function asignarTextoElemento(id, texto) {
-  const elementoHTML = document.getElementById(id);
-  if (elementoHTML) {
-    elementoHTML.innerHTML = texto;
-  } else {
-    console.warn(`Elemento con id "${id}" no encontrado.`);
-  }
+function actualizarLista() {
+    const lista = document.getElementById('listaAmigos');
+    lista.innerHTML = '';
+    amigos.forEach(amigo => {
+        const li = document.createElement('li');
+        li.textContent = amigo;
+        lista.appendChild(li);
+    });
 }
 
-// Verifica el intento del usuario
-function verificarIntento() {
-  const inputUsuario = document.getElementById("valorUsuario");
-  const numeroDelUsuario = parseInt(inputUsuario.value);
-
-  // Validación de entrada
-  if (isNaN(numeroDelUsuario) || numeroDelUsuario < 1 || numeroDelUsuario > 10) {
-    asignarTextoElemento("mensaje", "⚠️ Ingresa un número válido entre 1 y 10.");
-    inputUsuario.value = "";
-    return;
-  }
-
-  // Comparación con el número secreto
-  if (numeroDelUsuario === numeroSecreto) {
-    asignarTextoElemento("mensaje", `🎉 ¡Correcto! Adivinaste en ${intentos} intento(s).`);
-  } else {
-    const pista = numeroDelUsuario > numeroSecreto
-      ? "🔽 El número secreto es menor."
-      : "🔼 El número secreto es mayor.";
-    asignarTextoElemento("mensaje", pista);
-    intentos++;
-  }
-
-  inputUsuario.value = "";
+function sortearAmigo() {
+    if (amigos.length < 2) {
+        alert('Debe haber al menos 2 amigos para realizar el sorteo.');
+        return;
+    }
+    const indice = Math.floor(Math.random() * amigos.length);
+    const amigoSorteado = amigos[indice];
+    mostrarResultado(amigoSorteado);
 }
 
-// Reinicia el juego
-function reiniciarJuego() {
-  numeroSecreto = generarNumeroSecreto();
-  intentos = 1;
-  asignarTextoElemento("mensaje", " Juego reiniciado. Ingresa un número del 1 al 10.");
-  console.log("Número secreto (debug):", numeroSecreto); // Puedes quitar esto si no lo necesitas
+function mostrarResultado(amigo) {
+    const resultado = document.getElementById('resultado');
+    resultado.innerHTML = '';
+    const li = document.createElement('li');
+    li.textContent = `🎉 El amigo secreto es: ${amigo}`;
+    resultado.appendChild(li);
 }
-
-
